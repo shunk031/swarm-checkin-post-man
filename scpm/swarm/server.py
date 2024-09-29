@@ -1,10 +1,10 @@
-import io
 import json
+import logging
 import os
-from typing import Optional
-from urllib.parse import urlparse
+import time
+from typing import Final, Optional
 
-import requests
+from dotenv import load_dotenv
 from fastapi import APIRouter, Form
 from fastapi.responses import RedirectResponse
 from typing_extensions import Annotated
@@ -17,10 +17,16 @@ from .checkins import fetch_swarm_share_url
 from .oauth2 import get_swarm_access_token, get_swarm_auth_url
 from .users import fetch_latest_checkin
 
+load_dotenv()
+
+
 SWARM_VERSIONING = "20240831"
-SWARM_REDIRECT_URL = "http://localhost:8000/swarm/callback"
+SWARM_REDIRECT_URL = f"{os.environ['BASE_URL']}/swarm/callback"
 
 ACCESS_TOKEN: Optional[str] = None
+DELAY_FOR_WAITING_PHOTO_UPLOADING: Final[int] = 15
+
+logger = logging.getLogger("uvicorn")
 
 swarm = APIRouter(prefix="/swarm", tags=["swarm"])
 
@@ -52,6 +58,11 @@ async def recieve_swarm_push(
 ):
     assert secret == os.environ["SWARM_PUSH_SECRET"]
     assert ACCESS_TOKEN is not None
+
+    logger.info(
+        f"Waiting for {DELAY_FOR_WAITING_PHOTO_UPLOADING} seconds for photo uploading"
+    )
+    time.sleep(DELAY_FOR_WAITING_PHOTO_UPLOADING)
 
     checkin_json = json.loads(checkin)
     checkin_id = checkin_json["id"]
