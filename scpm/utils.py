@@ -33,7 +33,7 @@ def get_post_address(formatted_addresses) -> str:
         format_address = formatted_addresses[-2]
 
     post_address = re_format_post_address(format_address)
-    logger.info(formatted_addresses)
+    logger.info(f"Post Address: {post_address}")
 
     return post_address
 
@@ -48,15 +48,13 @@ def construct_post_message(checkin, checkin_short_url: str) -> str:
     if has_shout:
         msg = f"""\
         {checkin['shout']} (@ {checkin['venue']['name']} in {post_address})
-        {checkin_short_url}
-        """
+        {checkin_short_url}"""
     else:
         msg = f"""\
         I'm at {checkin['venue']['name']} in {post_address}
-        {checkin_short_url}
-        """
+        {checkin_short_url}"""
 
     msg = textwrap.dedent(msg)
-    logger.info(msg)
+    logger.debug(msg)
 
     return msg
