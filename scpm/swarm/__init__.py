@@ -11,3 +11,8 @@ def get_swarm_redirect_url() -> str:
 @lru_cache
 def get_swarm_push_api_url() -> str:
     return f"{get_host_url()}/swarm/push"
+
+
+@lru_cache
+def get_swarm_auth_url() -> str:
+    return f"{get_host_url()}/swarm/auth"

@@ -1,5 +1,3 @@
-import os
-from functools import lru_cache
 from typing import Final
 from urllib.parse import urlencode
 
@@ -11,7 +9,7 @@ SWARM_AUTH_URL: Final[str] = "https://foursquare.com/oauth2/authenticate"
 SWARM_ACCESS_TOKEN_URL: Final[str] = "https://foursquare.com/oauth2/access_token"
 
 
-def get_swarm_auth_url(redirect_uri: str) -> str:
+def get_swarm_oauth2_url(redirect_uri: str) -> str:
     conf = get_configs()
 
     params = {
