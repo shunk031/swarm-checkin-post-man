@@ -12,6 +12,9 @@ requests = "^2.32.3"
 tweepy = "^4.14.0"
 fastapi = { extras = ["standard"], version = "^0.115.0" }
 python-dotenv = "^1.0.1"
+ngrok = "^1.4.0"
+loguru = "^0.7.2"
+pydantic-settings = "^2.5.2"
 
 [tool.poetry.group.dev.dependencies]
 ruff = ">=0.1.5"

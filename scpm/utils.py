@@ -1,12 +1,26 @@
-import logging
+import os
 import re
 import textwrap
+from functools import lru_cache
 
-logger = logging.getLogger("uvicorn")
+from loguru import logger
+
+from scpm.config import get_configs
 
 
-def get_photo_data(photo_json):
-    breakpoint()
+@lru_cache
+def get_host_url() -> str:
+    conf = get_configs()
+
+    host = os.environ["SCPM_REMOTE_HOST"]
+    port = conf.scpm_port
+
+    if conf.scpm_dev_env == "development":
+        return f"{host}:{port}"
+    elif conf.scpm_dev_env == "production":
+        return host
+    else:
+        raise ValueError(f"Invalid {conf.scpm_dev_env=}")
 
 
 def get_post_address(formatted_addresses) -> str:
