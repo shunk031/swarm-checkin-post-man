@@ -9,6 +9,7 @@ from loguru import logger
 
 from scpm.config import get_configs
 from scpm.swarm import get_swarm_push_api_url, get_swarm_redirect_url
+from scpm.swarm.oauth2 import get_swarm_auth_url
 from scpm.swarm.server import swarm as swarm_router
 from scpm.utils import get_host_url
 
@@ -69,12 +70,18 @@ templates = Jinja2Templates(directory="scpm/templates")
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request):
+    swarm_redirect_url = get_swarm_redirect_url()
+    swarm_push_api_url = get_swarm_push_api_url()
+    swarm_auth_url = get_swarm_auth_url(
+        redirect_uri=swarm_redirect_url,
+    )
     return templates.TemplateResponse(
         "index.html",
         {
             "request": request,
-            "redirect_url": get_swarm_redirect_url(),
-            "push_api_url": get_swarm_push_api_url(),
+            "redirect_url": swarm_redirect_url,
+            "push_api_url": swarm_push_api_url,
+            "auth_url": swarm_auth_url,
         },
     )
 

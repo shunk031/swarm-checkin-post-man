@@ -6,7 +6,6 @@ from urllib.parse import urlencode
 import requests
 
 from scpm.config import get_configs
-from scpm.utils import get_host_url
 
 SWARM_AUTH_URL: Final[str] = "https://foursquare.com/oauth2/authenticate"
 SWARM_ACCESS_TOKEN_URL: Final[str] = "https://foursquare.com/oauth2/access_token"
