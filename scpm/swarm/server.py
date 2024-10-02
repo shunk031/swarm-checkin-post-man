@@ -1,39 +1,36 @@
 import json
-import logging
-import os
 import time
 from typing import Final, Optional
 
-from dotenv import load_dotenv
 from fastapi import APIRouter, Form
 from fastapi.responses import RedirectResponse
+from loguru import logger
 from typing_extensions import Annotated
 
+from scpm.config import get_configs
 from scpm.twitter.auth import get_twitter_api_clients
 from scpm.twitter.media import upload_media
 from scpm.utils import construct_post_message
 
+from . import get_swarm_redirect_url
 from .checkins import fetch_swarm_share_url
-from .oauth2 import get_swarm_access_token, get_swarm_auth_url
+from .oauth2 import get_swarm_access_token, get_swarm_oauth2_url
 from .users import fetch_latest_checkin
 
-load_dotenv()
-
-
-SWARM_VERSIONING = "20240831"
-SWARM_REDIRECT_URL = f"{os.environ['BASE_URL']}/swarm/callback"
+SWARM_VERSIONING: Final[str] = "20240831"
 
 ACCESS_TOKEN: Optional[str] = None
 DELAY_FOR_WAITING_PHOTO_UPLOADING: Final[int] = 15
 
-logger = logging.getLogger("uvicorn")
 
 swarm = APIRouter(prefix="/swarm", tags=["swarm"])
 
 
 @swarm.get("/auth", response_class=RedirectResponse)
 async def auth():
-    auth_url = get_swarm_auth_url(redirect_uri=SWARM_REDIRECT_URL)
+    auth_url = get_swarm_oauth2_url(
+        redirect_uri=get_swarm_redirect_url(),
+    )
     return RedirectResponse(url=auth_url)
 
 
@@ -41,11 +38,12 @@ async def auth():
 async def callback(code: str):
     access_token = get_swarm_access_token(
         code=code,
-        redirect_uri=SWARM_REDIRECT_URL,
+        redirect_uri=get_swarm_redirect_url(),
     )
 
     global ACCESS_TOKEN
     ACCESS_TOKEN = access_token
+    logger.debug(f"Set {ACCESS_TOKEN=}")
 
     return {"status": "ok"}
 
@@ -56,7 +54,9 @@ async def recieve_swarm_push(
     user: Annotated[str, Form()],
     secret: Annotated[str, Form()],
 ):
-    assert secret == os.environ["SWARM_PUSH_SECRET"]
+    conf = get_configs()
+
+    assert secret == conf.swarm_push_secret
     assert ACCESS_TOKEN is not None
 
     logger.info(

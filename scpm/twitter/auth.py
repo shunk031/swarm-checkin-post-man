@@ -3,6 +3,8 @@ from dataclasses import dataclass
 
 import tweepy
 
+from scpm.config import get_configs
+
 
 @dataclass
 class TwitterClient(object):
@@ -11,11 +13,12 @@ class TwitterClient(object):
 
 
 def _get_v1_client() -> tweepy.API:
+    conf = get_configs()
     x_auth = tweepy.OAuthHandler(
-        consumer_key=os.environ["X_CONSUMER_API_KEY"],
-        consumer_secret=os.environ["X_CONSUMER_SECRET"],
-        access_token=os.environ["X_ACCESS_TOKEN"],
-        access_token_secret=os.environ["X_ACCESS_TOKEN_SECRET"],
+        consumer_key=conf.x_consumer_api_key,
+        consumer_secret=conf.x_consumer_secret,
+        access_token=conf.x_access_token,
+        access_token_secret=conf.x_access_token_secret,
     )
 
     x_v1_client = tweepy.API(auth=x_auth)
@@ -25,12 +28,14 @@ def _get_v1_client() -> tweepy.API:
 
 
 def _get_v2_client() -> tweepy.Client:
+    conf = get_configs()
+
     x_v2_client = tweepy.Client(
-        bearer_token=os.environ["X_BEARER_TOKEN"],
-        consumer_key=os.environ["X_CONSUMER_API_KEY"],
-        consumer_secret=os.environ["X_CONSUMER_SECRET"],
-        access_token=os.environ["X_ACCESS_TOKEN"],
-        access_token_secret=os.environ["X_ACCESS_TOKEN_SECRET"],
+        bearer_token=conf.x_bearer_token,
+        consumer_key=conf.x_consumer_api_key,
+        consumer_secret=conf.x_consumer_secret,
+        access_token=conf.x_access_token,
+        access_token_secret=conf.x_access_token_secret,
     )
     return x_v2_client
 
