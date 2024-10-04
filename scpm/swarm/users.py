@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 import requests
 
 SWARM_USERS_SELF_URL = "https://api.foursquare.com/v2/users/self"
@@ -5,7 +7,7 @@ SWARM_USERS_SELF_CHECKINS_URL = "https://api.foursquare.com/v2/users/self/checki
 SWARM_USERS_SELF_PHOTOS_URL = "https://api.foursquare.com/v2/users/self/photos"
 
 
-def fetch_latest_checkin(access_token: str, versioning: str):
+def fetch_latest_checkin(access_token: str, versioning: str) -> Dict[str, Any]:
     res = requests.get(
         url=SWARM_USERS_SELF_CHECKINS_URL,
         params={"v": versioning, "oauth_token": access_token, "limit": "1"},

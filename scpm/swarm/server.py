@@ -10,7 +10,7 @@ from typing_extensions import Annotated
 from scpm.config import get_configs
 from scpm.twitter.auth import get_twitter_api_clients
 from scpm.twitter.media import upload_media
-from scpm.utils import construct_post_message
+from scpm.twitter.post import PostConstructor
 
 from . import get_swarm_redirect_url
 from .checkins import fetch_swarm_share_url
@@ -67,7 +67,7 @@ async def recieve_swarm_push(
     checkin_json = json.loads(checkin)
     checkin_id = checkin_json["id"]
 
-    checkin = fetch_latest_checkin(
+    checkin_dict = fetch_latest_checkin(
         access_token=ACCESS_TOKEN,
         versioning=SWARM_VERSIONING,
     )
@@ -79,10 +79,10 @@ async def recieve_swarm_push(
         versioning=SWARM_VERSIONING,
     )
 
-    post_message = construct_post_message(
-        checkin=checkin,
-        checkin_short_url=share_url,
+    post_constructor = PostConstructor(
+        checkin=checkin_dict, checkin_short_url=share_url
     )
+    post_message = post_constructor()
 
     client = get_twitter_api_clients()
 
