@@ -59,11 +59,13 @@ class PostConstructor(object):
         else:
             msg = f"I'm at {self.checkin['venue']['name']} in {post_address}"
 
+        logger.debug(f"# of chars w/o URL: {len(msg)}")
         msg = textwrap.dedent(
             f"""\
             {msg}
             {self.checkin_short_url}"""
         )
+        logger.debug(f"# of chars w/ URL: {len(msg)}")
         logger.debug(msg)
 
         return msg
