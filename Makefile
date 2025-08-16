@@ -4,11 +4,11 @@
 
 .PHONY: setup
 setup:
-	pip install -U --no-cache-dir pip setuptools wheel poetry
+	cp .env.sample .env
 
 .PHONY: install
 install:
-	poetry install
+	uv sync
 
 #
 # linter/formatter/typecheck
@@ -16,19 +16,19 @@ install:
 
 .PHONY: lint
 lint: install
-	poetry run ruff check --output-format=github .
+	uv run ruff check --output-format=github .
 
 .PHONY: format
 format: install
-	poetry run ruff format --check --diff .
+	uv run ruff format --check --diff .
 
 .PHONY: typecheck
 typecheck: install
-	poetry run mypy --cache-dir=/dev/null .
+	uv run mypy --cache-dir=/dev/null .
 
 #
 # Run server
 #
 .PHONY: run
 run:
-	fastapi dev scpm/run.py
+	uv run fastapi dev src/scpm/run.py
