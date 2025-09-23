@@ -12,7 +12,7 @@ from scpm.swarm.server import swarm as swarm_router
 app = FastAPI()
 app.include_router(swarm_router)
 
-templates = Jinja2Templates(directory="scpm/templates")
+templates = Jinja2Templates(directory="src/scpm/templates")
 
 
 @app.get("/", response_class=HTMLResponse)
