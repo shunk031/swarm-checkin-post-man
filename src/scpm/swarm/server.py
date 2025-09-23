@@ -49,7 +49,7 @@ async def callback(code: str):
 
 
 @swarm.post("/push")
-async def recieve_swarm_push(
+async def receive_swarm_push(
     checkin: Annotated[str, Form()],
     user: Annotated[str, Form()],
     secret: Annotated[str, Form()],
