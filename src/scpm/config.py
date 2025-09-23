@@ -10,7 +10,7 @@ Environment = Literal[
 
 
 class Configs(BaseSettings):
-    scpm_endpoint_url: str
+    scpm_endpoint: str
     scpm_dev_env: Environment
     scpm_port: str
 

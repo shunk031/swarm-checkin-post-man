@@ -12,7 +12,7 @@ from scpm.config import get_configs
 def get_host_url() -> str:
     conf = get_configs()
 
-    host = os.environ["SCPM_REMOTE_HOST"]
+    host = conf.scpm_endpoint
     port = conf.scpm_port
 
     if conf.scpm_dev_env == "beta":
