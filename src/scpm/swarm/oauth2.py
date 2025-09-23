@@ -13,7 +13,7 @@ def get_swarm_oauth2_url(redirect_uri: str) -> str:
     conf = get_configs()
 
     params = {
-        "client_id": conf.swarm_client_id,
+        "client_id": conf.swarm_client_id.get_secret_value(),
         "response_type": "code",
         "redirect_uri": redirect_uri,
     }
