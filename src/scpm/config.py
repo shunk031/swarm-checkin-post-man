@@ -1,6 +1,7 @@
 from functools import lru_cache
 from typing import Literal
 
+from pydantic import SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 Environment = Literal[
@@ -14,17 +15,17 @@ class Configs(BaseSettings):
     scpm_dev_env: Environment
     scpm_port: str
 
-    swarm_client_id: str
-    swarm_client_secret: str
-    swarm_push_secret: str
+    swarm_client_id: SecretStr
+    swarm_client_secret: SecretStr
+    swarm_push_secret: SecretStr
 
-    x_client_id: str
-    x_client_secret: str
-    x_access_token: str
-    x_access_token_secret: str
-    x_bearer_token: str
-    x_consumer_api_key: str
-    x_consumer_secret: str
+    x_client_id: SecretStr
+    x_client_secret: SecretStr
+    x_access_token: SecretStr
+    x_access_token_secret: SecretStr
+    x_bearer_token: SecretStr
+    x_consumer_api_key: SecretStr
+    x_consumer_secret: SecretStr
 
     model_config = SettingsConfigDict(env_file=".env")
 
