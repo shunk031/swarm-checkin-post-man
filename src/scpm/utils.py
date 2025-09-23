@@ -1,4 +1,3 @@
-import os
 import re
 import textwrap
 from functools import lru_cache
@@ -54,7 +53,7 @@ def construct_post_message(checkin, checkin_short_url: str) -> str:
         I'm at {checkin["venue"]["name"]} in {post_address}
         {checkin_short_url}"""
 
-    msg = textwrap.dedent(msg)
+    msg = textwrap.dedent(msg)  # Remove common leading whitespace
     logger.debug(msg)
 
     return msg
