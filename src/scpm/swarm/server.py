@@ -69,7 +69,7 @@ async def receive_swarm_push(
     conf = get_configs()
     access_token = request.app.state.access_token
 
-    assert secret == conf.swarm_push_secret
+    assert secret == conf.swarm_push_secret.get_secret_value()
     assert access_token is not None
 
     logger.info(
@@ -78,6 +78,8 @@ async def receive_swarm_push(
     time.sleep(DELAY_FOR_WAITING_PHOTO_UPLOADING)
 
     checkin_json = json.loads(checkin)
+    logger.debug(f"{checkin_json=}")
+
     checkin_id = checkin_json["id"]
 
     checkin = fetch_latest_checkin(
