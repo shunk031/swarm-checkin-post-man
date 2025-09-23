@@ -1,12 +1,17 @@
 from functools import lru_cache
-from typing import Optional
+from typing import Literal
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+Environment = Literal[
+    "beta",
+    "real",
+]
 
 
 class Configs(BaseSettings):
-    scpm_dev_env: str
+    scpm_endpoint_url: str
+    scpm_dev_env: Environment
     scpm_port: str
 
     swarm_client_id: str
@@ -21,17 +26,7 @@ class Configs(BaseSettings):
     x_consumer_api_key: str
     x_consumer_secret: str
 
-    ngrok_authtoken: Optional[str] = None
-
     model_config = SettingsConfigDict(env_file=".env")
-
-    @field_validator("scpm_dev_env")
-    def validate_scpm_dev_env(cls, value):
-        if value not in ("development", "production"):
-            raise ValueError(
-                'scpm_dev_env must be either "development" or "production"'
-            )
-        return value
 
 
 @lru_cache

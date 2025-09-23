@@ -15,9 +15,9 @@ def get_host_url() -> str:
     host = os.environ["SCPM_REMOTE_HOST"]
     port = conf.scpm_port
 
-    if conf.scpm_dev_env == "development":
+    if conf.scpm_dev_env == "beta":
         return f"{host}:{port}"
-    elif conf.scpm_dev_env == "production":
+    elif conf.scpm_dev_env == "real":
         return host
     else:
         raise ValueError(f"Invalid {conf.scpm_dev_env=}")
@@ -47,11 +47,11 @@ def construct_post_message(checkin, checkin_short_url: str) -> str:
 
     if has_shout:
         msg = f"""\
-        {checkin['shout']} (@ {checkin['venue']['name']} in {post_address})
+        {checkin["shout"]} (@ {checkin["venue"]["name"]} in {post_address})
         {checkin_short_url}"""
     else:
         msg = f"""\
-        I'm at {checkin['venue']['name']} in {post_address}
+        I'm at {checkin["venue"]["name"]} in {post_address}
         {checkin_short_url}"""
 
     msg = textwrap.dedent(msg)
