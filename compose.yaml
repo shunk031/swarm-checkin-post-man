@@ -5,8 +5,7 @@ services:
       args:
         - SCPM_PORT=${SCPM_PORT}
     ports:
-      - ${SCPM_PORT}:${SCPM_PORT}
-      - 4040:4040
+      - ${SCPM_PORT}
     env_file:
       - .env
     tty: true # for colorized output
