@@ -4,13 +4,17 @@
 
 ### Server environments
 
-```shell
-pip install -U pip poetry
-poetry install
-```
+- Copy `.env.sample` to `.env` and then fill in the necessary values.
 
 ```shell
-cp .env.example .env
+make setup
+
+```
+
+- Install dependencies
+
+```shell
+make install
 ```
 
 ### Swarm environments
@@ -21,5 +25,5 @@ cp .env.example .env
 ## Run
 
 ```shell
-fastapi dev scpm/run.py
+uv run fastapi run src/scpm/run.py
 ```

@@ -1,8 +1,9 @@
 import json
 import time
+from contextlib import asynccontextmanager
 from typing import Final, Optional
 
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, FastAPI, Form, Request, Response
 from fastapi.responses import RedirectResponse
 from loguru import logger
 from typing_extensions import Annotated
@@ -19,11 +20,21 @@ from .users import fetch_latest_checkin
 
 SWARM_VERSIONING: Final[str] = "20240831"
 
-ACCESS_TOKEN: Optional[str] = None
 DELAY_FOR_WAITING_PHOTO_UPLOADING: Final[int] = 15
 
 
-swarm = APIRouter(prefix="/swarm", tags=["swarm"])
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    access_token: Optional[str] = None
+    app.state.access_token = access_token
+    yield
+
+
+swarm = APIRouter(
+    lifespan=lifespan,
+    prefix="/swarm",
+    tags=["swarm"],
+)
 
 
 @swarm.get("/auth", response_class=RedirectResponse)
@@ -35,29 +46,31 @@ async def auth():
 
 
 @swarm.get("/callback")
-async def callback(code: str):
+async def callback(request: Request, code: str):
     access_token = get_swarm_access_token(
         code=code,
         redirect_uri=get_swarm_redirect_url(),
     )
 
-    global ACCESS_TOKEN
-    ACCESS_TOKEN = access_token
-    logger.debug(f"Set {ACCESS_TOKEN=}")
+    request.app.state.access_token = access_token
+    logger.debug(f"Set {request.app.state.access_token=}")
 
-    return {"status": "ok"}
+    return Response(content="OK")
 
 
 @swarm.post("/push")
-async def recieve_swarm_push(
+async def receive_swarm_push(
+    request: Request,
     checkin: Annotated[str, Form()],
     user: Annotated[str, Form()],
     secret: Annotated[str, Form()],
+    swarm_versioning: Annotated[str, Form()] = SWARM_VERSIONING,
 ):
     conf = get_configs()
+    access_token = request.app.state.access_token
 
-    assert secret == conf.swarm_push_secret
-    assert ACCESS_TOKEN is not None
+    assert secret == conf.swarm_push_secret.get_secret_value()
+    assert access_token is not None
 
     logger.info(
         f"Waiting for {DELAY_FOR_WAITING_PHOTO_UPLOADING} seconds for photo uploading"
@@ -65,18 +78,20 @@ async def recieve_swarm_push(
     time.sleep(DELAY_FOR_WAITING_PHOTO_UPLOADING)
 
     checkin_json = json.loads(checkin)
+    logger.debug(f"{checkin_json=}")
+
     checkin_id = checkin_json["id"]
 
     checkin = fetch_latest_checkin(
-        access_token=ACCESS_TOKEN,
-        versioning=SWARM_VERSIONING,
+        access_token=access_token,
+        versioning=swarm_versioning,
     )
     assert checkin["id"] == checkin_id  # type: ignore
 
     share_url = fetch_swarm_share_url(
-        access_token=ACCESS_TOKEN,
+        access_token=access_token,
         checkin_id=checkin_id,
-        versioning=SWARM_VERSIONING,
+        versioning=swarm_versioning,
     )
 
     post_message = construct_post_message(

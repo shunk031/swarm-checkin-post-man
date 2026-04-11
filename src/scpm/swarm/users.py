@@ -1,8 +1,14 @@
+from typing import Final
+
 import requests
 
-SWARM_USERS_SELF_URL = "https://api.foursquare.com/v2/users/self"
-SWARM_USERS_SELF_CHECKINS_URL = "https://api.foursquare.com/v2/users/self/checkins"
-SWARM_USERS_SELF_PHOTOS_URL = "https://api.foursquare.com/v2/users/self/photos"
+SWARM_USERS_SELF_URL: Final[str] = "https://api.foursquare.com/v2/users/self"
+SWARM_USERS_SELF_CHECKINS_URL: Final[str] = (
+    "https://api.foursquare.com/v2/users/self/checkins"
+)
+SWARM_USERS_SELF_PHOTOS_URL: Final[str] = (
+    "https://api.foursquare.com/v2/users/self/photos"
+)
 
 
 def fetch_latest_checkin(access_token: str, versioning: str):

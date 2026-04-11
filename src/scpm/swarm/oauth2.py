@@ -13,7 +13,7 @@ def get_swarm_oauth2_url(redirect_uri: str) -> str:
     conf = get_configs()
 
     params = {
-        "client_id": conf.swarm_client_id,
+        "client_id": conf.swarm_client_id.get_secret_value(),
         "response_type": "code",
         "redirect_uri": redirect_uri,
     }
@@ -27,8 +27,8 @@ def get_swarm_access_token(code: str, redirect_uri: str) -> str:
     res = requests.get(
         url=SWARM_ACCESS_TOKEN_URL,
         params={
-            "client_id": conf.swarm_client_id,
-            "client_secret": conf.swarm_client_secret,
+            "client_id": conf.swarm_client_id.get_secret_value(),
+            "client_secret": conf.swarm_client_secret.get_secret_value(),
             "grant_type": "authorization_code",
             "redirect_uri": redirect_uri,
             "code": code,

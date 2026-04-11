@@ -1,31 +1,35 @@
-[tool.poetry]
+[project]
 name = "swarm-checkin-post-man"
 version = "0.1.0"
-description = ""
-authors = ["Shunsuke KITADA <shunsuke.kitada.0831@gmail.com>"]
+description = "Add your description here"
 readme = "README.md"
-packages = [{ include = "scpm" }]
+authors = [
+    { name = "Shunsuke KITADA", email = "shunsuke.kitada.0831@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.116.1",
+    "loguru>=0.7.3",
+    "pydantic-settings>=2.10.1",
+    "tweepy>=4.16.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.11"
-requests = "^2.32.3"
-tweepy = "^4.14.0"
-fastapi = { extras = ["standard"], version = "^0.115.0" }
-python-dotenv = "^1.0.1"
-ngrok = "^1.4.0"
-loguru = "^0.7.2"
-pydantic-settings = "^2.5.2"
+[build-system]
+requires = ["uv_build>=0.8.11,<0.9.0"]
+build-backend = "uv_build"
 
-[tool.poetry.group.dev.dependencies]
-ruff = ">=0.1.5"
-mypy = ">=1.0.0"
-pytest = ">=6.0.0"
-types-requests = "^2.32.0.20240914"
+[dependency-groups]
+dev = [
+    "mypy>=1.0.0",
+    "pytest>=6.0.0",
+    "ruff>=0.1.5",
+    "types-requests>=2.32.4.20250913",
+]
+
+[tool.uv.build-backend]
+module-name = "scpm"
 
 [tool.mypy]
 python_version = "3.11"
 ignore_missing_imports = true
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
